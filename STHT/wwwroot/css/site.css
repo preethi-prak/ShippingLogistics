@@ -8,6 +8,12 @@ html {
   }
 }
 
+main {
+  min-height: 400px;
+  background-color: #fff;
+  padding: 25px;
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -16,11 +22,22 @@ html {
 body {
   margin-bottom: 60px;
 }
-.hero-image {
-  background-image: url('../Images/tractor.jpg'); 
-  background-size: cover;
-  background-position: left;
-  color: #ffffff; /* Set text color to contrast with the background */
-  text-align: left;
-  padding: 100px 0; /* Adjust padding as needed */
+
+.row{
+  padding: 5px 5px;
 }
+
+.hero-image {
+  background-image: url('../Images/tractor.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff; /* Set text color to contrast with the background */
+  height: 450px;
+  padding: 25px 25px; /* Adjust padding as needed */
+}
+
+#BidPriceTextArea{
+  height: 300px;
+}
+
+
