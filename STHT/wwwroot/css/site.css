@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+.hero-image {
+  background-image: url('../Images/tractor.jpg'); 
+  background-size: cover;
+  background-position: left;
+  color: #ffffff; /* Set text color to contrast with the background */
+  text-align: left;
+  padding: 100px 0; /* Adjust padding as needed */
+}
