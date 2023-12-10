@@ -2,3 +2,14 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$(document).ready(function () {
+    // Open Bid modal on button click
+    $('#bidModalBtn').click(function () {
+        $('#bidModal').modal('show');
+    });
+
+    // Open Shipping modal on link click
+    $('#shippingModalLink').click(function () {
+        $('#shippingModal').modal('show');
+    });
+});

@@ -2,8 +2,8 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Bootstrap Razor Page";
-    var country_code = "FR";
-    var shipping_price = 800;
+    var countryCode = "FR";
+    var shippingPrice = 800;
 
 }
 
@@ -16,9 +16,9 @@
         </div>
         <!-- Column 2 -->
         <div class="col-md-2">
-            <label for="country">Country : </label>
+            <label  id="country">Country : </label>
              <!-- API Call -->
-            <label id="country-code" for="code">@country_code</label> 
+            <label id="country-code">@countryCode</label> 
         </div>
     </div>
 
@@ -42,13 +42,13 @@
             <!-- Row 2 in Column 2 -->
             <div class="row gx-5">
                 <div class="col">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bidModal">Place Bid</button>
+                    <button id="bidModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#bidModal">Place Bid</button>
                 </div>
             </div>
             <!-- Row 3 in Column 2 -->
             <div class="row gx-5">
                 <div class="col-md-12">
-                    <label for="shippingOption"><strong>Shipping Option </strong></label>
+                    <label><strong>Shipping Option </strong></label>
                     
                 </div>
             </div>
@@ -56,18 +56,18 @@
             <div class="row gx-5">
                 <div class="col-md-8">
         
-                    <label for="DeliverToYard">Delivery to your Yard:</label>
+                    <label>Delivery to your Yard:</label>
                      
                 </div>
                 <div class="col-md-4">
-                    <label>@shipping_price</label>
+                    <label>@shippingPrice</label>
                 </div>
                  
             </div>
             <div class="row gx-5">
                 <div class="col-md-8"></div>
                 <div class="col-md-4">
-                    <a href="#" data-toggle="modal" data-target="#shippingModal">Update</a>
+                    <a href="#" id="shippingModalLink" data-toggle="modal" data-target="#shippingModal">Update</a>
                 </div>
             </div>
         </div>
@@ -120,17 +120,6 @@
 
 @section Scripts {
     <script>
-        // JavaScript code to open Bid and Shipping modals
-        $(document).ready(function () {
-            // Open Bid modal on button click
-            $('#bidModalBtn').click(function () {
-                $('#bidModal').modal('show');
-            });
-
-            // Open Shipping modal on link click
-            $('#shippingModalLink').click(function () {
-                $('#shippingModal').modal('show');
-            });
-        });
+        
     </script>
 }
