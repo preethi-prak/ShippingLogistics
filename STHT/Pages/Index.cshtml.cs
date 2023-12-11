@@ -5,39 +5,57 @@ namespace STHT.Pages;
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
-    //private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory _httpClientFactory;
     //private readonly UserShippingDbContext _dbContext;
 
     //include parameter UserShippingDbContext dbContext 
     //IHttpClientFactory httpClientFactory
     //Dependency injection
-    public IndexModel( ILogger<IndexModel> logger)
+    public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger)
     {
        //_httpClientFactory = httpClientFactory;
         //_dbContext = dbContext;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
+
     }
-    public string UserLocaleCountry { get; set; }
-    public string ApiResponse { get; set; }
+    public string? UserLocaleCountry { get; set; }
+    public string? ShippingApiResponse { get; set; }
 
     //async Task
-    public void OnGet()
+    public async Task OnGet()
     {
         //await GetUserLocale();
-        //await MakeApiCall();
+        await ShippingApiCall();
         //ProcessShippingData();
     }
 
    // API Call to make user locale
-    private async Task GetUserLocale()
-    {
-        throw new NotImplementedException();
-    }
+    //private async Task GetUserLocale()
+    //{
+        //throw new NotImplementedException();
+    //}
     //Api call to make external API call
     
-    private async Task MakeApiCall()
+    private async Task ShippingApiCall()
     {
-        throw new NotImplementedException();
+        var client = _httpClientFactory.CreateClient("ShippingDataClient");
+        var bearerToken = "20231207160500";
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
+        var response = await client.GetAsync("https://new-api.staging.spectinga.com/STHT/shipping");
+        //var response = await client.GetAsync("https://cat-fact.herokuapp.com/facts/");
+
+        if (response.IsSuccessStatusCode)
+        {
+            ShippingApiResponse = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation(response.ReasonPhrase);
+        }
+        else
+        {
+            ShippingApiResponse = $"Error: {response.StatusCode}";
+            _logger.LogCritical(response.ReasonPhrase);
+        }
+        
     }
     
     //Method to save Shipping Data in the database
