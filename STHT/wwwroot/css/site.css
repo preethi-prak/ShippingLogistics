@@ -1,43 +1,43 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 main {
-  min-height: 400px;
-  background-color: #fff;
-  padding: 25px;
+    min-height: 400px;
+    background-color: #fff;
+    padding: 25px;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
-.row{
-  padding: 5px 5px;
+.row {
+    padding: 5px 5px;
 }
 
 .hero-image {
-  background-image: url('../Images/tractor.jpg');
-  background-size: cover;
-  background-position: center;
-  color: #ffffff; /* Set text color to contrast with the background */
-  height: 450px;
-  padding: 25px 25px; /* Adjust padding as needed */
+    background-image: url('../Images/tractor.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff; /* Set text color to contrast with the background */
+    height: 450px;
+    padding: 25px 25px; /* Adjust padding as needed */
 }
 
-#BidPriceTextArea{
-  height: 300px;
+#BidPriceTextArea {
+    height: 300px;
 }
 
 

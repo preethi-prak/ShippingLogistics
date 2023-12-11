@@ -17,8 +17,8 @@ $(document).ready(function () {
         $('#bidModal').modal('hide');
         $('#shippingModal').modal('hide');
     });
-    
-    $(document).keydown(function(event) {
+
+    $(document).keydown(function (event) {
         if (event.keyCode == 27) {
             $('#bidModal').modal('hide');
             $('#shippingModal').modal('hide');

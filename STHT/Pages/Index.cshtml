@@ -5,68 +5,84 @@
     var countryCode = "FR";
     var shippingPrice = 800;
     var ownTransport = 0;
-    var BidPrice = 2400;
+    var bidPrice = 2400;
+    var totalPrice = 0;
+
+    if (shippingPrice != 0)
+    {
+        totalPrice = shippingPrice + bidPrice;
+    }
+    else
+    {
+        totalPrice = bidPrice;
+    }
+
     // set shipping to zero if country code doesnt exist . 
 }
 
 <div class="container-fluid mt-5">
-    <!-- Row 1 -->
     <div class="row">
-        <!-- Column 1 -->
         <div class="col-md-10">
-
         </div>
-        <!-- Column 2 -->
-        <div class="col-md-2">
+        <div class="col-md-1">
             <label for="countryCode">Country : </label>
             <!-- API Call -->
             <!--<label id="country-code">@countryCode</label> -->
-            <input type="text" class="form-control" id="countryCode" name="countryCode" value="@countryCode" readonly>
-
         </div>
+        <div class="col-md-1">
+            <label  id="countryCode"  name="countryCode" >@countryCode </label>
+               </div>
     </div>
-
-    <!-- Row 2 -->
     <div class="row gx-5">
-        <!-- Column 1 -->
         <div class="col-md-8">
-            <!-- Hero Image -->
             <div class="jumbotron hero-image">
-
             </div>
         </div>
-        <!-- Column 2 -->
         <div class="col-md-4">
-            <!-- Row 1 in Column 2 -->
             <div class="row gx-5">
                 <div class="col">
-                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: &pound; @BidPrice</textarea>
+                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: &pound; @bidPrice</textarea>
                 </div>
             </div>
-            <!-- Row 2 in Column 2 -->
             <div class="row gx-5">
                 <div class="col">
                     <button id="bidModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#bidModal">Place Bid</button>
                 </div>
             </div>
-            <!-- Row 3 in Column 2 -->
             <div class="row gx-5">
                 <div class="col-md-12">
                     <label>
                         <strong>Shipping Option </strong>
                     </label>
-
                 </div>
             </div>
+            <!-- Change component based on the shipping option -->
+            @if (shippingPrice != 0)
+            {
             <div class="row gx-5">
                 <div class="col-md-8">
                     <label for="deliverToYard">Delivery to your Yard:</label>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="deliverToYard" name="deliverToYard" value="&pound;@shippingPrice" readonly>
+                     <label  id="deliverToYard"  name="deliverToYard" >&pound;@shippingPrice </label>
+
                 </div>
 
             </div>
+            } else
+            {
+            <!-- if shippingPrice == 0 --> 
+            <div class="row gx-5">
+                <div class="col-md-8">
+                    <label for="ownTransportLabel">Own Transport:</label>
+                </div>
+                <div class="col-md-4">
+                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound;@shippingPrice </label>
+
+                </div>
+            </div>
+            }
+            
             <div class="row gx-5">
                 <div class="col-md-8"></div>
                 <div class="col-md-4">
@@ -79,7 +95,7 @@
 
 <!-- Bid Modal -->
 <div class="modal fade" id="bidModal" tabindex="-1" role="dialog" aria-labelledby="bidModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="bidModalLabel">Place Bid</h5>
@@ -89,26 +105,34 @@
             </div>
             <div class="modal-body">
                 <div class="row gx-5">
-                    <div class="col-md-12">
-
+                    <div class="col-md-4">
+                        <label for="tractorPriceLabel">Tractor Price: </label>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <label id="tractorPriceLabel" name="tractorPriceLabel">&pound; @bidPrice</label>
                     </div>
                 </div>
                 <div class="row gx-5">
                     <div class="col-md-12">
-                         @Html.Partial("Shared/_ShippingPartialView.cshtml")  
+                        @Html.Partial("Shared/_ShippingPartialView.cshtml")
                     </div>
                 </div>
                 <div class="row gx-5">
-                    <div class="col-md-12">
-
+                    <div class="col-md-4">
+                        <label for="totalPriceLabel">Total Price : </label>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <label id="totalPriceLabel" name="totalPriceLabel">&pound; @totalPrice</label>
                     </div>
                 </div>
-                
-
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+             <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
+              <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
@@ -116,7 +140,7 @@
 
 <!-- Shipping Modal -->
 <div class="modal fade" id="shippingModal" tabindex="-1" role="dialog" aria-labelledby="shippingModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="shippingModalLabel">Shipping</h5>
@@ -124,15 +148,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-              @Html.Partial("Shared/_ShippingPartialView.cshtml")  
-                
+            <div class="modal-body">@Html.Partial("Shared/_ShippingPartialView.cshtml")
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary">Update changes</button>
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
 </div>
-
