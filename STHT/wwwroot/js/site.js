@@ -12,4 +12,18 @@ $(document).ready(function () {
     $('#shippingModalLink').click(function () {
         $('#shippingModal').modal('show');
     });
+
+    $('.close').click(function () {
+        $('#bidModal').modal('hide');
+        $('#shippingModal').modal('hide');
+    });
+    
+    $(document).keydown(function(event) {
+        if (event.keyCode == 27) {
+            $('#bidModal').modal('hide');
+            $('#shippingModal').modal('hide');
+        }
+    });
 });
+
+

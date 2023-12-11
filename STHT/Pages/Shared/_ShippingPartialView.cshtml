@@ -1,0 +1,26 @@
+@model IndexModel
+@{
+    var countryCode = "FR";
+    var shippingPrice = 800;
+    var ownTransport = 0;
+    // set shipping to zero if country code doesnt exist . 
+}
+
+<div>
+    <h4>
+        <strong>Update Shipping Option</strong>
+    </h4>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="shippingOptions" id="deliverToYourYard" value="@shippingPrice" checked>
+    <label class="form-check-label" for="deliverToYourYard">
+        Delivery to your Yard &nbsp;&nbsp;&nbsp; &pound; @shippingPrice
+    </label>
+</div>
+
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="shippingOptions" id="ownTransport" value="@ownTransport">
+    <label class="form-check-label" for="ownTransport">
+        Own Transport  &nbsp; &nbsp; &nbsp; &nbsp; &pound; @ownTransport
+    </label>
+</div>

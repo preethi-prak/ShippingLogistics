@@ -4,7 +4,9 @@
     ViewData["Title"] = "Bootstrap Razor Page";
     var countryCode = "FR";
     var shippingPrice = 800;
-
+    var ownTransport = 0;
+    var BidPrice = 2400;
+    // set shipping to zero if country code doesnt exist . 
 }
 
 <div class="container-fluid mt-5">
@@ -12,13 +14,15 @@
     <div class="row">
         <!-- Column 1 -->
         <div class="col-md-10">
-           
+
         </div>
         <!-- Column 2 -->
         <div class="col-md-2">
-            <label  id="country">Country : </label>
-             <!-- API Call -->
-            <label id="country-code">@countryCode</label> 
+            <label for="countryCode">Country : </label>
+            <!-- API Call -->
+            <!--<label id="country-code">@countryCode</label> -->
+            <input type="text" class="form-control" id="countryCode" name="countryCode" value="@countryCode" readonly>
+
         </div>
     </div>
 
@@ -28,7 +32,7 @@
         <div class="col-md-8">
             <!-- Hero Image -->
             <div class="jumbotron hero-image">
-                
+
             </div>
         </div>
         <!-- Column 2 -->
@@ -36,7 +40,7 @@
             <!-- Row 1 in Column 2 -->
             <div class="row gx-5">
                 <div class="col">
-                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: 2400</textarea>
+                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: &pound; @BidPrice</textarea>
                 </div>
             </div>
             <!-- Row 2 in Column 2 -->
@@ -48,21 +52,20 @@
             <!-- Row 3 in Column 2 -->
             <div class="row gx-5">
                 <div class="col-md-12">
-                    <label><strong>Shipping Option </strong></label>
-                    
+                    <label>
+                        <strong>Shipping Option </strong>
+                    </label>
+
                 </div>
             </div>
-            
             <div class="row gx-5">
                 <div class="col-md-8">
-        
-                    <label>Delivery to your Yard:</label>
-                     
+                    <label for="deliverToYard">Delivery to your Yard:</label>
                 </div>
                 <div class="col-md-4">
-                    <label>@shippingPrice</label>
+                    <input type="text" class="form-control" id="deliverToYard" name="deliverToYard" value="&pound;@shippingPrice" readonly>
                 </div>
-                 
+
             </div>
             <div class="row gx-5">
                 <div class="col-md-8"></div>
@@ -79,17 +82,32 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bidModalLabel">Bid Modal Title</h5>
+                <h5 class="modal-title" id="bidModalLabel">Place Bid</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Bid Modal Content -->
-                <!-- Add your content for the Bid modal here -->
+                <div class="row gx-5">
+                    <div class="col-md-12">
+
+                    </div>
+                </div>
+                <div class="row gx-5">
+                    <div class="col-md-12">
+                         @Html.Partial("Shared/_ShippingPartialView.cshtml")  
+                    </div>
+                </div>
+                <div class="row gx-5">
+                    <div class="col-md-12">
+
+                    </div>
+                </div>
+                
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
@@ -101,25 +119,20 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="shippingModalLabel">Shipping Modal Title</h5>
+                <h5 class="modal-title" id="shippingModalLabel">Shipping</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Shipping Modal Content -->
-                <!-- Add your content for the Shipping modal here -->
+              @Html.Partial("Shared/_ShippingPartialView.cshtml")  
+                
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        
-    </script>
-}
