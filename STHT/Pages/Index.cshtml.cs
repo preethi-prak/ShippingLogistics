@@ -19,31 +19,34 @@ public class IndexModel : PageModel
         _httpClientFactory = httpClientFactory;
 
     }
-    public string? UserLocaleCountry { get; set; }
-    public string? ShippingApiResponse { get; set; }
+
+    public string? UserLocaleCountry { get; set; } 
+    public string? ShippingApiResponse { get; set; } 
 
     //async Task
-    public async Task OnGet()
+    public void  OnGet()
     {
         //await GetUserLocale();
-        await ShippingApiCall();
+        //await ShippingApiCall();
+        UserLocaleCountry = "FR";
+
         //ProcessShippingData();
     }
 
    // API Call to make user locale
     //private async Task GetUserLocale()
     //{
-        //throw new NotImplementedException();
+        //UserLocaleCountry = "FR";
     //}
     //Api call to make external API call
     
     private async Task ShippingApiCall()
     {
         var client = _httpClientFactory.CreateClient("ShippingDataClient");
-        var bearerToken = "20231207160500";
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
-        var response = await client.GetAsync("https://new-api.staging.spectinga.com/STHT/shipping");
-        //var response = await client.GetAsync("https://cat-fact.herokuapp.com/facts/");
+        //var bearerToken = "20231207160500";
+        //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
+        //var response = await client.GetAsync("https://new-api.staging.spectinga.com/STHT/shipping");
+        var response = await client.GetAsync("https://cat-fact.herokuapp.com/facts/");
 
         if (response.IsSuccessStatusCode)
         {
