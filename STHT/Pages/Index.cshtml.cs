@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json; //  Newtonsoft.Json for JSON 
 
 
@@ -17,12 +18,15 @@ namespace STHT.Pages
 
         public string? UserLocaleCountry { get; set; } 
         public string? ShippingApiResponse { get; set; }
+        public int UserId { get; set; } = 1234;
+        public int productId { get; set; }=  112 ;
+        
+        
         public Dictionary<string, decimal>? ShippingData { get; private set; }
 
         public async Task OnGetAsync()
         {
-            // await GetUserLocale();
-            UserLocaleCountry = "FR"; 
+            
             ShippingData = await ShippingApiCallAsync();
             // ProcessShippingData();
             
@@ -36,14 +40,25 @@ namespace STHT.Pages
                 
                 }
                 
+                
             }
             
+            UserLocaleCountry =  GetCountryCode();
+            
+        }
+        private string GetCountryCode()
+        {
+            //Database access to get country code 
+            return "FR";
+
         }
 
         private async Task<Dictionary<string, decimal>?> ShippingApiCallAsync()
         {
             var httpClient = _httpClientFactory.CreateClient("ShippingDataClient");
-            var bearerToken = "20231207160500";
+            var BaseUrl = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ShippingApi")["BaseUrl"];
+            var bearerToken = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build()
+                .GetSection("ShippingApi")["BearerToken"];
 
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
             httpClient.DefaultRequestHeaders.Add("User-Agent", "MyAspNetCoreApp/6.0");
@@ -51,7 +66,7 @@ namespace STHT.Pages
             try
             {
                 //include URL and bearer token in appsetting.json - !IMPORTANT
-                var response = await httpClient.GetAsync("https://new-api.staging.spectinga.com/STHT/shipping");
+                var response = await httpClient.GetAsync(BaseUrl);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -74,16 +89,13 @@ namespace STHT.Pages
             }
         }
 
-        /*
-        private async Task GetUserLocale()
-        {
-            // Implementation here.
-        }
+
 
         private void ProcessShippingData()
         {
-            // Implementation here.
+            
         }
-        */
+        
     }
 }
+

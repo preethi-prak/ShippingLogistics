@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 //Service to register  and use IHttpClientFactory
 builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,5 +23,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+// Define the minimal API endpoint
 
 app.Run();
