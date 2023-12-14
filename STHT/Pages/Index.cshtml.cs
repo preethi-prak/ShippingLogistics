@@ -14,10 +14,7 @@ namespace STHT.Pages
         private readonly ShippingDbContext _dbContext;
 
         public bool IsDbConnected { get; set; }
-        
         public string? UserLocaleCountry { get; set; } 
-       // public string? ShippingApiResponse { get; set; }
-        //public float ShippingCost { get; set; } 
         public Dictionary<string, decimal>? ShippingData { get; private set; }
         public string? ApiCountry { get; private set; }
         [BindProperty]
@@ -36,8 +33,6 @@ namespace STHT.Pages
             await GetCountryCode();
             ShippingData = await ShippingApiCallAsync();
             UserLocaleCountry = "FR";
-
-             
             //ShippingCost = ProcessShippingData(UserLocaleCountry);
             NewShipping = new Shipping()
             {
@@ -58,39 +53,11 @@ namespace STHT.Pages
             {
                 NewShipping.TotalPrice = NewShipping.BidPrice;
             }
-            await TestConnection();
+            //await TestConnection();
             
            // _logger.LogInformation($"Data: {NewShipping}");
         }
-
-        // Code to test Database connection - Sucessful
-        private async Task TestConnection()
-        {
-            try
-            {
-                // Check if the database connection can be established
-                IsDbConnected = await _dbContext.Database.CanConnectAsync();
-                
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details
-                // For example, using ILogger
-                IsDbConnected = false;
-            }
-
-            if (IsDbConnected)
-            {
-                _logger.LogInformation("Connected");
-            }
-            else
-            {
-                _logger.LogCritical("NOT CONNECTED");
-                
-            }
-        }
-
-
+        
         public IActionResult OnPostUpdateShipping()
         {
             
@@ -105,7 +72,6 @@ namespace STHT.Pages
            
             return RedirectToPage("/Success");
         }
-
         public IActionResult OnPostBidding()    
         {
             var sh_userid = NewShipping.UserId;
@@ -195,5 +161,33 @@ namespace STHT.Pages
                 return 0;
             }
         }
+        
+        // Code to test Database connection - Sucessful
+        private async Task TestConnection()
+        {
+            try
+            {
+                // Check if the database connection can be established
+                IsDbConnected = await _dbContext.Database.CanConnectAsync();
+                
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                // For example, using ILogger
+                IsDbConnected = false;
+            }
+
+            if (IsDbConnected)
+            {
+                _logger.LogInformation("Connected");
+            }
+            else
+            {
+                _logger.LogCritical("NOT CONNECTED");
+                
+            }
+        }
+
     }
 }
