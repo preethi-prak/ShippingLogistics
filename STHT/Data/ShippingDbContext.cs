@@ -20,13 +20,28 @@ public class ShippingDbContext : DbContext
 
         if (existingShipping == null)
         {
+            //create new field
             ShippingDetails.Add(shippingModel);
-            
         }
         else
         {
-            // Update properties
-            // ...
+            // Update only specific fields
+            existingShipping.ShippingCost = shippingModel.ShippingCost;
+            existingShipping.OwnTransport = shippingModel.OwnTransport;
+            existingShipping.DeliveryOption = shippingModel.DeliveryOption;
+            existingShipping.CountryLocale = shippingModel.CountryLocale;
+            existingShipping.BidPrice = shippingModel.BidPrice;
+            if (shippingModel.DeliveryOption =="DeliveryToYard")
+            {
+                shippingModel.TotalPrice = shippingModel.ShippingCost + shippingModel.BidPrice;
+                
+            }
+            else if(shippingModel.DeliveryOption =="OwnTransport")
+            {
+                shippingModel.TotalPrice =  shippingModel.BidPrice;
+            }
+            existingShipping.TotalPrice = shippingModel.TotalPrice;
+            
             ShippingDetails.Update(existingShipping);
         }
         SaveChanges();

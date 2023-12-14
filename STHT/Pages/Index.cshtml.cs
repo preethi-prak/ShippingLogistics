@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Npgsql.Replication;
 using STHT.Data; // Newtonsoft.Json for JSON
 using STHT.Data.Models; 
 
@@ -19,7 +18,8 @@ namespace STHT.Pages
         public Dictionary<string, decimal>? ShippingData { get; private set; }
         public string? ApiCountry { get; private set; }
         [BindProperty]
-        public Shipping NewShipping { get; set; }
+        public Shipping? NewShipping { get; set; }
+        public Shipping? ExistingShipping { get; set; }
         
         public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger,ShippingDbContext dbContext)
         {
@@ -34,35 +34,39 @@ namespace STHT.Pages
             await GetCountryCode();
             ShippingData = await ShippingApiCallAsync();
             UserLocaleCountry = "FR";
-            //ShippingCost = ProcessShippingData(UserLocaleCountry);
-            
-                NewShipping = new Shipping()
-                {
-                    UserId = 1122,
-                    ProductId = 111,
-                    CountryLocale = UserLocaleCountry,
-                    ShippingCost = ProcessShippingData(UserLocaleCountry),
-                    OwnTransport = 0,
-                    BidPrice = 2400,
-                    DeliveryOption ="OwnTransport"
-                
-                };
-            //also check what delivaryoption is set to ? - IMP
-                if (NewShipping.DeliveryOption =="DeliveryToYard")
-                {
-                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
-                }
-                else
-                {
-                    NewShipping.TotalPrice = NewShipping.BidPrice;
-                }
+            NewShipping = new Shipping()
+            {
+                UserId = 1122,
+                ProductId = 111,
+            }; 
+            var user = NewShipping.UserId;
+            var prod = NewShipping.ProductId;
                 
             //update button 
-            // record of userid and product id exists : 
-            //get the values and reload . 
-            // if not leave intial values
+            // record of userid and product id exists : get the values and reload . 
+            // if not create new shipping 
             
             //await TestConnection();
+            ExistingShipping = await _dbContext.ShippingDetails
+                .FirstOrDefaultAsync(s => s.UserId == NewShipping.UserId && s.ProductId == NewShipping.ProductId);
+
+            if (ExistingShipping == null)
+            {
+                NewShipping.CountryLocale = UserLocaleCountry;
+                NewShipping.ShippingCost = ProcessShippingData(UserLocaleCountry,ShippingData);
+                NewShipping.OwnTransport = 0;
+                NewShipping.BidPrice = 2400;
+                NewShipping.DeliveryOption = "OwnTransport";
+                
+                if (NewShipping.DeliveryOption =="DeliveryToYard")
+                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+                else
+                    NewShipping.TotalPrice = NewShipping.BidPrice;
+            }
+            else
+            {
+                NewShipping = ExistingShipping;
+            }
  
         }
         
@@ -205,11 +209,11 @@ namespace STHT.Pages
             }
         }
 
-        private decimal ProcessShippingData(string userLocale)
+        private decimal ProcessShippingData(string userLocale,Dictionary<string,decimal>shipData)
         {
-            if (userLocale != null && ShippingData != null && ShippingData.ContainsKey(userLocale))
+            if (userLocale != null && shipData != null && shipData.ContainsKey(userLocale))
             {
-                decimal shipping = ShippingData[userLocale];
+                decimal shipping = shipData[userLocale];
                 return shipping;
             }
             else
