@@ -12,5 +12,24 @@ public class ShippingDbContext : DbContext
     }
 
     public DbSet<Shipping> ShippingDetails { get; set; }
-    
+
+    public void CreateOrUpdateShipping(Shipping shippingModel)
+    {
+        var existingShipping =  ShippingDetails
+            .FirstOrDefault(s => s.UserId == shippingModel.UserId && s.ProductId == shippingModel.ProductId);
+
+        if (existingShipping == null)
+        {
+            ShippingDetails.Add(shippingModel);
+            
+        }
+        else
+        {
+            // Update properties
+            // ...
+            ShippingDetails.Update(existingShipping);
+        }
+        SaveChanges();
+
+    }
 }

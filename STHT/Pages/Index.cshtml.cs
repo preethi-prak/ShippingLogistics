@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Npgsql.Replication;
 using STHT.Data; // Newtonsoft.Json for JSON
@@ -34,28 +35,35 @@ namespace STHT.Pages
             ShippingData = await ShippingApiCallAsync();
             UserLocaleCountry = "FR";
             //ShippingCost = ProcessShippingData(UserLocaleCountry);
-            NewShipping = new Shipping()
-            {
-                UserId = 1234,
-                ProductId = 111,
-                CountryLocale = UserLocaleCountry,
-                ShippingCost = ProcessShippingData(UserLocaleCountry),
-                OwnTransport = 0,
-                BidPrice = 2400,
+            
+                NewShipping = new Shipping()
+                {
+                    UserId = 1122,
+                    ProductId = 111,
+                    CountryLocale = UserLocaleCountry,
+                    ShippingCost = ProcessShippingData(UserLocaleCountry),
+                    OwnTransport = 0,
+                    BidPrice = 2400,
+                    DeliveryOption ="OwnTransport"
                 
-            };
+                };
+            //also check what delivaryoption is set to ? - IMP
+                if (NewShipping.DeliveryOption =="DeliveryToYard")
+                {
+                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+                }
+                else
+                {
+                    NewShipping.TotalPrice = NewShipping.BidPrice;
+                }
+                
+            //update button 
+            // record of userid and product id exists : 
+            //get the values and reload . 
+            // if not leave intial values
             
-            if (NewShipping.ShippingCost != 0)
-            {
-                NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
-            }
-            else
-            {
-                NewShipping.TotalPrice = NewShipping.BidPrice;
-            }
             //await TestConnection();
-            
-           // _logger.LogInformation($"Data: {NewShipping}");
+ 
         }
         
         public IActionResult OnPostUpdateShipping()
@@ -67,12 +75,26 @@ namespace STHT.Pages
            var price = NewShipping.ShippingCost;
            var c = NewShipping.CountryLocale;
            var aa = NewShipping.OwnTransport;
-           var bid = NewShipping.BidPrice;
-           var total = NewShipping.TotalPrice;
            
-            return RedirectToPage("/Success");
+           bool isDbConnected =  _dbContext.Database.CanConnect();
+           
+           if (!ModelState.IsValid)
+           {
+               return RedirectToPage("/Error");
+           }
+           
+          
+           if (!isDbConnected)
+           {
+               // Handle the error, maybe set an error message or log it
+               ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
+               return RedirectToPage("/Error");
+           }
+           
+           //Call Get method on index page load
+            return RedirectToPage();
         }
-        public IActionResult OnPostBidding()    
+        public  IActionResult OnPostBidding()    
         {
             var sh_userid = NewShipping.UserId;
             var sh_prodid = NewShipping.ProductId;
@@ -81,8 +103,42 @@ namespace STHT.Pages
             var c = NewShipping.CountryLocale;
             var aa = NewShipping.OwnTransport;
             var bid = NewShipping.BidPrice;
-            var total = NewShipping.TotalPrice;
-            return RedirectToPage("/Success");
+            
+            if (!ModelState.IsValid)
+            {
+                return RedirectToPage("/Error");
+            }
+
+            // Check database connection
+            bool isDbConnected =  _dbContext.Database.CanConnect();
+            if (!isDbConnected)
+            {
+                // Handle the error, maybe set an error message or log it
+                ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
+                return RedirectToPage("/Error");
+            }
+            else
+            {
+                if (NewShipping.DeliveryOption == "DeliveryToYard")
+                {
+                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+                    _dbContext.CreateOrUpdateShipping(NewShipping);
+                    
+                }else if (NewShipping.DeliveryOption == "OwnTransport")
+                {
+                    NewShipping.TotalPrice = NewShipping.BidPrice;
+                    _dbContext.CreateOrUpdateShipping(NewShipping);
+                }
+                // Proceed with create or update operation
+                
+
+                // Redirect to a success page because the submission is done
+                
+                return RedirectToPage("/Success");
+                
+            }
+
+            
         }
 
         // API call the Minimal API
@@ -188,6 +244,8 @@ namespace STHT.Pages
                 
             }
         }
+        
+        
 
     }
 }

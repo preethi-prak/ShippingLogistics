@@ -49,7 +49,7 @@
                 </div>
             </div>
             <!-- Change component based on the shipping option -->
-            @if (Model.NewShipping.ShippingCost != 0)
+            @if (Model.NewShipping.DeliveryOption == "DeliveryToYard")
             {
             <div class="row gx-5">
                 <div class="col-md-8">
@@ -57,9 +57,7 @@
                 </div>
                 <div class="col-md-4">
                      <label  id="deliverToYard"  name="deliverToYard" >&pound; @Model.NewShipping.ShippingCost </label>
-
                 </div>
-
             </div>
             } else
             {
@@ -69,8 +67,7 @@
                     <label for="ownTransportLabel">Own Transport:</label>
                 </div>
                 <div class="col-md-4">
-                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.NewShipping.ShippingCost </label>
-
+                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.NewShipping.OwnTransport</label>
                 </div>
             </div>
             }
