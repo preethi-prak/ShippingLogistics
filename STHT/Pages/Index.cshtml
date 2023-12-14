@@ -119,8 +119,12 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="NewShipping.TotalPrice" id="totalPriceLabel" name="totalPriceLabel">&pound; @Model.NewShipping.TotalPrice</label>
+                        <!-- <label asp-for="NewShipping.TotalPrice" id="totalPriceLabel" name="totalPriceLabel">&pound; @Model.NewShipping.TotalPrice</label>
+                        <input type="hidden" asp-for="NewShipping.TotalPrice" /> -->
+                        
+                        <label id="totalPriceLabel" asp-for="NewShipping.TotalPrice">&pound; </label>
                         <input type="hidden" asp-for="NewShipping.TotalPrice" />
+
                     </div>
                 </div>
             </div>
@@ -163,3 +167,30 @@
     </div>
     </form>
 </div>
+@section Scripts {
+    <script>
+    //Ensuring that the DOM contents are fully loaded before manipulating elements
+    $(document).ready(function() {
+        const bidPrice = @Model.NewShipping.BidPrice;
+        const shippingCost = @Model.NewShipping.ShippingCost;
+        const totalPriceLabel = $('#totalPriceLabel');
+        const deliveryToYardRadio = $('#deliveryToYard');
+        const ownTransportRadio = $('#ownTransport');
+    
+        function updateTotalPrice() {
+            if (deliveryToYardRadio.is(':checked')) {
+                totalPriceLabel.text('£' + (bidPrice + shippingCost));
+            } else if (ownTransportRadio.is(':checked')) {
+                totalPriceLabel.text('£' + bidPrice);
+            }
+        }
+   
+        deliveryToYardRadio.change(updateTotalPrice);
+        ownTransportRadio.change(updateTotalPrice);
+    
+        // Initial calculation On Load
+        updateTotalPrice();
+    });
+        
+    </script>
+}
