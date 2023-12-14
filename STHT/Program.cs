@@ -1,9 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using STHT.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 //Service to register  and use IHttpClientFactory
 builder.Services.AddHttpClient();
+//Service to register DBContext Class. 
+builder.Services.AddDbContext<ShippingDbContext>(option =>
+    option.UseNpgsql(builder.Configuration.GetConnectionString("ConnString")));
 
 var app = builder.Build();
 

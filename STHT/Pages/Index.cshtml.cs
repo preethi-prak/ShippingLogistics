@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json; // Newtonsoft.Json for JSON
+using Newtonsoft.Json;
+using Npgsql.Replication;
+using STHT.Data; // Newtonsoft.Json for JSON
+using STHT.Data.Models; 
 
 namespace STHT.Pages
 {
@@ -8,19 +11,23 @@ namespace STHT.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ShippingDbContext _dbContext;
 
+        public bool IsDbConnected { get; set; }
+        
         public string? UserLocaleCountry { get; set; } 
        // public string? ShippingApiResponse { get; set; }
         //public float ShippingCost { get; set; } 
-        public Dictionary<string, float>? ShippingData { get; private set; }
+        public Dictionary<string, decimal>? ShippingData { get; private set; }
         public string? ApiCountry { get; private set; }
         [BindProperty]
         public Shipping NewShipping { get; set; }
         
-        public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger)
+        public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger,ShippingDbContext dbContext)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         public async Task OnGetAsync()
@@ -29,12 +36,14 @@ namespace STHT.Pages
             await GetCountryCode();
             ShippingData = await ShippingApiCallAsync();
             UserLocaleCountry = "FR";
+
+             
             //ShippingCost = ProcessShippingData(UserLocaleCountry);
             NewShipping = new Shipping()
             {
                 UserId = 1234,
                 ProductId = 111,
-                countryLocale = UserLocaleCountry,
+                CountryLocale = UserLocaleCountry,
                 ShippingCost = ProcessShippingData(UserLocaleCountry),
                 OwnTransport = 0,
                 BidPrice = 2400,
@@ -49,11 +58,39 @@ namespace STHT.Pages
             {
                 NewShipping.TotalPrice = NewShipping.BidPrice;
             }
+            await TestConnection();
             
-            _logger.LogInformation($"Data: {NewShipping}");
+           // _logger.LogInformation($"Data: {NewShipping}");
         }
-        
-  
+
+        // Code to test Database connection - Sucessful
+        private async Task TestConnection()
+        {
+            try
+            {
+                // Check if the database connection can be established
+                IsDbConnected = await _dbContext.Database.CanConnectAsync();
+                
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                // For example, using ILogger
+                IsDbConnected = false;
+            }
+
+            if (IsDbConnected)
+            {
+                _logger.LogInformation("Connected");
+            }
+            else
+            {
+                _logger.LogCritical("NOT CONNECTED");
+                
+            }
+        }
+
+
         public IActionResult OnPostUpdateShipping()
         {
             
@@ -61,7 +98,7 @@ namespace STHT.Pages
            var sh_prodid = NewShipping.ProductId;
            var del = NewShipping.DeliveryOption;
            var price = NewShipping.ShippingCost;
-           var c = NewShipping.countryLocale;
+           var c = NewShipping.CountryLocale;
            var aa = NewShipping.OwnTransport;
            var bid = NewShipping.BidPrice;
            var total = NewShipping.TotalPrice;
@@ -75,7 +112,7 @@ namespace STHT.Pages
             var sh_prodid = NewShipping.ProductId;
             var del = NewShipping.DeliveryOption;
             var price = NewShipping.ShippingCost;
-            var c = NewShipping.countryLocale;
+            var c = NewShipping.CountryLocale;
             var aa = NewShipping.OwnTransport;
             var bid = NewShipping.BidPrice;
             var total = NewShipping.TotalPrice;
@@ -111,7 +148,7 @@ namespace STHT.Pages
             
         }
 
-        private async Task<Dictionary<string, float>?> ShippingApiCallAsync()
+        private async Task<Dictionary<string, decimal>?> ShippingApiCallAsync()
         {
             var httpClient = _httpClientFactory.CreateClient("ShippingDataClient");
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -128,7 +165,7 @@ namespace STHT.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var shippingResponse = await response.Content.ReadAsStringAsync();
-                    var shippingData = JsonConvert.DeserializeObject<Dictionary<string, float>>(shippingResponse);
+                    var shippingData = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(shippingResponse);
                     _logger.LogInformation("API call Success");
                     return shippingData;
                 }
@@ -146,11 +183,11 @@ namespace STHT.Pages
             }
         }
 
-        private float ProcessShippingData(string userLocale)
+        private decimal ProcessShippingData(string userLocale)
         {
             if (userLocale != null && ShippingData != null && ShippingData.ContainsKey(userLocale))
             {
-                float shipping = ShippingData[userLocale];
+                decimal shipping = ShippingData[userLocale];
                 return shipping;
             }
             else
