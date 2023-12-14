@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json; // Newtonsoft.Json for JSON
 
-
 namespace STHT.Pages
 {
     public class IndexModel : PageModel
@@ -12,13 +11,12 @@ namespace STHT.Pages
         private readonly IHttpClientFactory _httpClientFactory;
 
         public string? UserLocaleCountry { get; set; } 
-        public string? ShippingApiResponse { get; set; }
-        public int UserId { get; set; } = 1234;
-        public int ProductId { get; set; } = 112;
-        public float ShippingCost { get; set; } 
+       // public string? ShippingApiResponse { get; set; }
+        //public float ShippingCost { get; set; } 
         public Dictionary<string, float>? ShippingData { get; private set; }
-        public string? DeliveryOption { get; set; }
-        public string? Country { get; private set; }
+        public string? ApiCountry { get; private set; }
+        [BindProperty]
+        public Shipping NewShipping { get; set; }
         
         public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger)
         {
@@ -28,13 +26,34 @@ namespace STHT.Pages
 
         public async Task OnGetAsync()
         {
+            
             await GetCountryCode();
             ShippingData = await ShippingApiCallAsync();
             UserLocaleCountry = "FR";
-            ShippingCost = ProcessShippingData(UserLocaleCountry);
-            //_logger.LogInformation($"Shipping Cost: {ShippingCost}");
+            //ShippingCost = ProcessShippingData(UserLocaleCountry);
+            NewShipping = new Shipping()
+            {
+                UserId = 1234,
+                ProductId = 111,
+                countryLocale = UserLocaleCountry,
+                ShippingCost = ProcessShippingData(UserLocaleCountry),
+                OwnTransport = 0,
+                BidPrice = 2400,
+                
+            };
+            if (NewShipping.ShippingCost != 0)
+            {
+                NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+            }
+            else
+            {
+                NewShipping.TotalPrice = NewShipping.BidPrice;
+            }
+            
+            _logger.LogInformation($"Data: {NewShipping}");
         }
-
+        
+  
         public IActionResult OnPostUpdateShipping()
         {
            // _logger.LogWarning($"Received data: {JsonConvert.SerializeObject(Request.Form)}");
@@ -44,11 +63,28 @@ namespace STHT.Pages
            }
 
            _logger.LogCritical("Inside Update Shipping");
+           var sh_userid = NewShipping.UserId;
+           var sh_prodid = NewShipping.ProductId;
+           var del = NewShipping.DeliveryOption;
+           var price = NewShipping.ShippingCost;
+           var c = NewShipping.countryLocale;
+           var aa = NewShipping.OwnTransport;
+           var bid = NewShipping.BidPrice;
+           var total = NewShipping.TotalPrice;
+           
             return RedirectToPage("/Success");
         }
 
-        public IActionResult OnPostBidding()
+        public IActionResult OnPostBidding()    
         {
+            var sh_userid = NewShipping.UserId;
+            var sh_prodid = NewShipping.ProductId;
+            var del = NewShipping.DeliveryOption;
+            var price = NewShipping.ShippingCost;
+            var c = NewShipping.countryLocale;
+            var aa = NewShipping.OwnTransport;
+            var bid = NewShipping.BidPrice;
+            var total = NewShipping.TotalPrice;
             return RedirectToPage("/Success");
         }
 
@@ -64,18 +100,18 @@ namespace STHT.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var apiResponse = await response.Content.ReadAsStringAsync();
-                    var Info = JsonConvert.DeserializeObject<dynamic>(apiResponse);
-                    Country = Info?.country;
+                    var info = JsonConvert.DeserializeObject<dynamic>(apiResponse);
+                    ApiCountry = info?.country;
                 }
                 else
                 {
-                    Country = "NONE";
+                    ApiCountry = "NONE";
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogCritical($"Exception: {ex.Message}");
-                Country = "NONE";
+                ApiCountry = "NONE";
                 
             }
             

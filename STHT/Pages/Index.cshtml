@@ -4,19 +4,7 @@
 
 @{
     ViewData["Title"] = "STHT";
-    var shippingPrice = 800;
-   
-    var bidPrice = 2400;
-    var totalPrice = 0;
-
-    if (Model.ShippingCost != 0)
-    {
-        totalPrice = shippingPrice + bidPrice;
-    }
-    else
-    {
-        totalPrice = bidPrice;
-    }
+    
 
     // set shipping to zero if country code doesnt exist . 
 }
@@ -24,7 +12,8 @@
 <div class="container-fluid mt-5">
     <div class="row">
         <div class="col-md-9">
-            <p>API Country Name: @Model.Country</p>
+            <p >API Country Name: @Model.ApiCountry</p>
+
         </div>
         <div class="col-md-1">
                     
@@ -44,7 +33,7 @@
         <div class="col-md-4">
             <div class="row gx-5">
                 <div class="col">
-                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: &pound; @bidPrice</textarea>
+                    <textarea id="BidPriceTextArea" class="form-control" rows="1" readonly>Bid Price: &pound; @Model.NewShipping.BidPrice</textarea>
                 </div>
             </div>
             <div class="row gx-5">
@@ -60,14 +49,14 @@
                 </div>
             </div>
             <!-- Change component based on the shipping option -->
-            @if (Model.ShippingCost != 0)
+            @if (Model.NewShipping.ShippingCost != 0)
             {
             <div class="row gx-5">
                 <div class="col-md-8">
                     <label for="deliverToYard">Delivery to your Yard:</label>
                 </div>
                 <div class="col-md-4">
-                     <label  id="deliverToYard"  name="deliverToYard" >&pound; @Model.ShippingCost </label>
+                     <label  id="deliverToYard"  name="deliverToYard" >&pound; @Model.NewShipping.ShippingCost </label>
 
                 </div>
 
@@ -80,7 +69,7 @@
                     <label for="ownTransportLabel">Own Transport:</label>
                 </div>
                 <div class="col-md-4">
-                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.ShippingCost </label>
+                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.NewShipping.ShippingCost </label>
 
                 </div>
             </div>
@@ -115,7 +104,7 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
-                        <label id="tractorPriceLabel" name="tractorPriceLabel">&pound; @bidPrice</label>
+                        <label asp-for="NewShipping.BidPrice" id="tractorPriceLabel" name="tractorPriceLabel">&pound; @Model.NewShipping.BidPrice</label>
                     </div>
                 </div>
                 <div class="row gx-5">
@@ -130,11 +119,16 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
-                        <label id="totalPriceLabel" name="totalPriceLabel">&pound; @totalPrice</label>
+                        <label asp-for="NewShipping.TotalPrice" id="totalPriceLabel" name="totalPriceLabel">&pound; @Model.NewShipping.TotalPrice</label>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <input type="hidden" asp-for="NewShipping.UserId"/>
+                <input type="hidden" asp-for="NewShipping.ProductId"/>
+                <input type="hidden" asp-for="NewShipping.ShippingCost"/>
+                <input type="hidden" asp-for="NewShipping.countryLocale"/>
+               
                 <button type="submit" class="btn btn-primary" id="confirmBtn" asp-page-handler="Bidding">Confirm</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
@@ -157,6 +151,10 @@
             <div class="modal-body">@Html.Partial("Shared/_ShippingPartialView.cshtml")
             </div>
             <div class="modal-footer">
+                <input type="hidden" asp-for="NewShipping.UserId"/>
+                <input type="hidden" asp-for="NewShipping.ProductId"/>
+                <input type="hidden" asp-for="NewShipping.ShippingCost"/>
+                <input type="hidden" asp-for="NewShipping.countryLocale"/>
                 <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping">Update changes</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
