@@ -3,13 +3,13 @@
 
 
 @{
-    ViewData["Title"] = "Bootstrap Razor Page";
+    ViewData["Title"] = "STHT";
     var shippingPrice = 800;
    
     var bidPrice = 2400;
     var totalPrice = 0;
 
-    if (shippingPrice != 0)
+    if (Model.ShippingCost != 0)
     {
         totalPrice = shippingPrice + bidPrice;
     }
@@ -24,6 +24,7 @@
 <div class="container-fluid mt-5">
     <div class="row">
         <div class="col-md-9">
+            <p>API Country Name: @Model.Country</p>
         </div>
         <div class="col-md-1">
                     
@@ -59,14 +60,14 @@
                 </div>
             </div>
             <!-- Change component based on the shipping option -->
-            @if (shippingPrice != 0)
+            @if (Model.ShippingCost != 0)
             {
             <div class="row gx-5">
                 <div class="col-md-8">
                     <label for="deliverToYard">Delivery to your Yard:</label>
                 </div>
                 <div class="col-md-4">
-                     <label  id="deliverToYard"  name="deliverToYard" >&pound;@shippingPrice </label>
+                     <label  id="deliverToYard"  name="deliverToYard" >&pound; @Model.ShippingCost </label>
 
                 </div>
 
@@ -79,7 +80,7 @@
                     <label for="ownTransportLabel">Own Transport:</label>
                 </div>
                 <div class="col-md-4">
-                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound;@shippingPrice </label>
+                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.ShippingCost </label>
 
                 </div>
             </div>
@@ -97,6 +98,7 @@
 
 <!-- Bid Modal -->
 <div class="modal fade" id="bidModal" tabindex="-1" role="dialog" aria-labelledby="bidModalLabel" aria-hidden="true">
+    <form method="post">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -133,15 +135,17 @@
                 </div>
             </div>
             <div class="modal-footer">
-             <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
-              <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="confirmBtn" asp-page-handler="Bidding">Confirm</button>
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
+    </form>
 </div>
 
 <!-- Shipping Modal -->
 <div class="modal fade" id="shippingModal" tabindex="-1" role="dialog" aria-labelledby="shippingModalLabel" aria-hidden="true">
+    <form method="post">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -153,9 +157,10 @@
             <div class="modal-body">@Html.Partial("Shared/_ShippingPartialView.cshtml")
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Update changes</button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping">Update changes</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
+    </form>
 </div>

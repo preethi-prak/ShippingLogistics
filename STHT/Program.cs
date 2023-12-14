@@ -24,5 +24,16 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 // Define the minimal API endpoint
+app.MapGet("/cultureinfo", (HttpContext context) => 
+{
+    var cultureInfo = System.Globalization.CultureInfo.CurrentCulture;
+    //en-US
+    var cultureParts = cultureInfo.Name.Split('-');
+    var countryCode = cultureParts.Length > 1 ? cultureParts[1] : "Unknown";
+    return Results.Ok(new 
+    { 
+        country = countryCode
+    });
+});
 
 app.Run();
