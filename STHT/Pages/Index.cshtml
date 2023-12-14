@@ -104,7 +104,10 @@
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
+                        
+                        
                         <label asp-for="NewShipping.BidPrice" id="tractorPriceLabel" name="tractorPriceLabel">&pound; @Model.NewShipping.BidPrice</label>
+                        <input type="hidden" asp-for="NewShipping.BidPrice" />
                     </div>
                 </div>
                 <div class="row gx-5">
@@ -120,6 +123,7 @@
                     </div>
                     <div class="col-md-4">
                         <label asp-for="NewShipping.TotalPrice" id="totalPriceLabel" name="totalPriceLabel">&pound; @Model.NewShipping.TotalPrice</label>
+                        <input type="hidden" asp-for="NewShipping.TotalPrice" />
                     </div>
                 </div>
             </div>

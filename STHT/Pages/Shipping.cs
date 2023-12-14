@@ -1,12 +1,13 @@
 namespace STHT.Pages;
 
+
 public class Shipping
 {
-    public int UserId { get; set; }
-    public int ProductId { get; set; }
-    public string DeliveryOption { get; set; }
+    public int UserId { get; init; }
+    public int ProductId { get; init; }
+    public string? DeliveryOption { get; set; }
     
-    public string countryLocale { get; set; }
+    public string? countryLocale { get; set; }
     
     public float ShippingCost { get; set; }
     

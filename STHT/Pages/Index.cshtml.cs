@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json; // Newtonsoft.Json for JSON
 
@@ -41,6 +40,7 @@ namespace STHT.Pages
                 BidPrice = 2400,
                 
             };
+            
             if (NewShipping.ShippingCost != 0)
             {
                 NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
@@ -56,13 +56,7 @@ namespace STHT.Pages
   
         public IActionResult OnPostUpdateShipping()
         {
-           // _logger.LogWarning($"Received data: {JsonConvert.SerializeObject(Request.Form)}");
-           foreach (var key in Request.Form.Keys)
-           {
-               _logger.LogCritical($"{key}: {Request.Form[key]}");
-           }
-
-           _logger.LogCritical("Inside Update Shipping");
+            
            var sh_userid = NewShipping.UserId;
            var sh_prodid = NewShipping.ProductId;
            var del = NewShipping.DeliveryOption;
