@@ -13,7 +13,8 @@ public class ShippingDbContext : DbContext
 
     public DbSet<Shipping> ShippingDetails { get; set; }
 
-    public void CreateOrUpdateShipping(Shipping shippingModel)
+    //Change the method name 
+    public void CreateOrUpdateShippingForBidding(Shipping shippingModel)
     {
         var existingShipping =  ShippingDetails
             .FirstOrDefault(s => s.UserId == shippingModel.UserId && s.ProductId == shippingModel.ProductId);

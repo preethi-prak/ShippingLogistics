@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using STHT.Data;
 
+// Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+//Register to DI container  to enable Razor pages
 builder.Services.AddRazorPages();
 //Service to register  and use IHttpClientFactory
 builder.Services.AddHttpClient();
@@ -13,7 +15,7 @@ builder.Services.AddDbContext<ShippingDbContext>(option =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//if the env isn't Development we have to display a friendly way to show expception
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -22,15 +24,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// If there is a request for stati files , we can serve it before the entire file loads 
 app.UseStaticFiles();
-
+//page routing
 app.UseRouting();
 
 app.UseAuthorization();
-
+//rendering and routing of razer pages 
+//map razor pages with routes OnGet - GET , OnPost - POST
 app.MapRazorPages();
-// Define the minimal API endpoint
-app.MapGet("/cultureinfo", (HttpContext context) => 
+//Minimal API for cultureinfo - Change URL to getUserLocale!! 
+app.MapGet("/getUserLocale", (HttpContext context) => 
 {
     var cultureInfo = System.Globalization.CultureInfo.CurrentCulture;
     //en-US

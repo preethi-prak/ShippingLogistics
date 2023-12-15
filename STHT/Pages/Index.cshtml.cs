@@ -12,15 +12,16 @@ namespace STHT.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ShippingDbContext _dbContext;
-
+        
+        // boolean val to check DB connection - intial test
         public bool IsDbConnected { get; set; }
-        public string? UserLocaleCountry { get; set; } 
         public Dictionary<string, decimal>? ShippingData { get; private set; }
         public string? ApiCountry { get; private set; }
+        
         [BindProperty]
         public Shipping? NewShipping { get; set; }
         public Shipping? ExistingShipping { get; set; }
-        
+        //Using DI 
         public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger,ShippingDbContext dbContext)
         {
             _httpClientFactory = httpClientFactory;
@@ -28,19 +29,17 @@ namespace STHT.Pages
             _dbContext = dbContext;
         }
 
+        //GET METHOD
         public async Task OnGetAsync()
         {
             
             await GetCountryCode();
             ShippingData = await ShippingApiCallAsync();
-            UserLocaleCountry = "FR";
             NewShipping = new Shipping()
             {
                 UserId = 1122,
                 ProductId = 111,
             }; 
-            var user = NewShipping.UserId;
-            var prod = NewShipping.ProductId;
                 
             //update button 
             // record of userid and product id exists : get the values and reload . 
@@ -52,8 +51,9 @@ namespace STHT.Pages
 
             if (ExistingShipping == null)
             {
-                NewShipping.CountryLocale = UserLocaleCountry;
-                NewShipping.ShippingCost = ProcessShippingData(UserLocaleCountry,ShippingData);
+                //If there exist no record for the userid and password create new shipping 
+                NewShipping.CountryLocale = "FR";
+                NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale,ShippingData);
                 NewShipping.OwnTransport = 0;
                 NewShipping.BidPrice = 2400;
                 NewShipping.DeliveryOption = "OwnTransport";
@@ -65,11 +65,13 @@ namespace STHT.Pages
             }
             else
             {
+                //if record exists for the user - assign the values in database
                 NewShipping = ExistingShipping;
             }
  
         }
         
+        // POSTMETHOD on Update shipping modal 
         public IActionResult OnPostUpdateShipping()
         {
             
@@ -79,73 +81,75 @@ namespace STHT.Pages
            var price = NewShipping.ShippingCost;
            var c = NewShipping.CountryLocale;
            var aa = NewShipping.OwnTransport;
-           
-           bool isDbConnected =  _dbContext.Database.CanConnect();
-           
-           if (!ModelState.IsValid)
+
+           if (NewShipping != null || ModelState.IsValid )
            {
+               bool isDbConnected =  _dbContext.Database.CanConnect();
+               if (!isDbConnected)
+               {
+                   // Handle the error, maybe set an error message or log it
+                   ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
+                   return RedirectToPage("/Error");
+               }
+           
+               //Call Get method on index page load
+               return RedirectToPage();
+           }
+           else
+           {
+               ModelState.AddModelError(string.Empty, "Shipping Data is null or Model state is invalid , refill form and submit");
                return RedirectToPage("/Error");
            }
            
-          
-           if (!isDbConnected)
-           {
-               // Handle the error, maybe set an error message or log it
-               ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
-               return RedirectToPage("/Error");
-           }
-           
-           //Call Get method on index page load
-            return RedirectToPage();
         }
         public  IActionResult OnPostBidding()    
         {
-            var sh_userid = NewShipping.UserId;
-            var sh_prodid = NewShipping.ProductId;
-            var del = NewShipping.DeliveryOption;
-            var price = NewShipping.ShippingCost;
-            var c = NewShipping.CountryLocale;
-            var aa = NewShipping.OwnTransport;
-            var bid = NewShipping.BidPrice;
-            
-            if (!ModelState.IsValid)
-            {
-                return RedirectToPage("/Error");
-            }
 
-            // Check database connection
-            bool isDbConnected =  _dbContext.Database.CanConnect();
-            if (!isDbConnected)
+            if (NewShipping != null || ModelState.IsValid  )
             {
-                // Handle the error, maybe set an error message or log it
-                ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
-                return RedirectToPage("/Error");
+                // Check database connection
+                bool isDbConnected =  _dbContext.Database.CanConnect();
+                if (!isDbConnected)
+                {
+                    // Handle the error, maybe set an error message or log it
+                    ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
+                    return RedirectToPage("/Error");
+                }
+                else
+                {
+                    if (NewShipping?.DeliveryOption == "DeliveryToYard")
+                    {
+                        NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+                        _dbContext.CreateOrUpdateShippingForBidding(NewShipping);
+                    
+                    }else if (NewShipping?.DeliveryOption == "OwnTransport")
+                    {
+                        NewShipping.TotalPrice = NewShipping.BidPrice;
+                        _dbContext.CreateOrUpdateShippingForBidding(NewShipping);
+                    }
+
+                    // Redirect to a success page because the submission is done
+                
+                    return RedirectToPage("/Success");
+                
+                }
+               
             }
             else
             {
-                if (NewShipping.DeliveryOption == "DeliveryToYard")
-                {
-                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
-                    _dbContext.CreateOrUpdateShipping(NewShipping);
-                    
-                }else if (NewShipping.DeliveryOption == "OwnTransport")
-                {
-                    NewShipping.TotalPrice = NewShipping.BidPrice;
-                    _dbContext.CreateOrUpdateShipping(NewShipping);
-                }
-                // Proceed with create or update operation
-                
-
-                // Redirect to a success page because the submission is done
-                
-                return RedirectToPage("/Success");
+                return RedirectToPage("/Error");
                 
             }
+
+            
 
             
         }
 
-        // API call the Minimal API
+        //  Minimal API - call to get locale user
+        // culture info is razor app is automatically set to accept headers of http request
+        // not always accurate
+        // localhost:8080/cultureinfo
         private async Task GetCountryCode()
         {
             var httpClient = _httpClientFactory.CreateClient("GetCountryCodeClient");
@@ -191,7 +195,7 @@ namespace STHT.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var shippingResponse = await response.Content.ReadAsStringAsync();
-                    var shippingData = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(shippingResponse);
+                    var shippingData = JsonConvert.DeserializeObject<Dictionary<string, decimal>?>(shippingResponse);
                     _logger.LogInformation("API call Success");
                     return shippingData;
                 }
@@ -209,7 +213,7 @@ namespace STHT.Pages
             }
         }
 
-        private decimal ProcessShippingData(string userLocale,Dictionary<string,decimal>shipData)
+        private decimal ProcessShippingData(string? userLocale,Dictionary<string, decimal>? shipData)
         {
             if (userLocale != null && shipData != null && shipData.ContainsKey(userLocale))
             {
@@ -222,19 +226,16 @@ namespace STHT.Pages
             }
         }
         
-        // Code to test Database connection - Sucessful
+        // Code to test Database connection - Successful
         private async Task TestConnection()
         {
             try
             {
                 // Check if the database connection can be established
                 IsDbConnected = await _dbContext.Database.CanConnectAsync();
-                
             }
             catch (Exception ex)
             {
-                // Log the exception details
-                // For example, using ILogger
                 IsDbConnected = false;
             }
 
@@ -245,11 +246,8 @@ namespace STHT.Pages
             else
             {
                 _logger.LogCritical("NOT CONNECTED");
-                
             }
         }
         
-        
-
     }
 }
