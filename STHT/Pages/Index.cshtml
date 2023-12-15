@@ -22,7 +22,7 @@
             <label asp-for="NewShipping.CountryLocale">Country: </label>
             </div>
         <div class="col-md-1">
-            <input asp-for="NewShipping.CountryLocale" readonly class="narrow-width"></input>
+            <input asp-for="NewShipping.CountryLocale" readonly class="narrow-width"/>
         </div>
     </div>
     <div class="row gx-5">
@@ -162,6 +162,7 @@
                 <input type="hidden" asp-for="NewShipping.ProductId"/>
                 <input type="hidden" asp-for="NewShipping.ShippingCost"/>
                 <input type="hidden" asp-for="NewShipping.CountryLocale"/>
+                <input type="hidden" asp-for="NewShipping.BidPrice"/>
                 <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping" id="UpdateShippingBtn">Update changes</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>

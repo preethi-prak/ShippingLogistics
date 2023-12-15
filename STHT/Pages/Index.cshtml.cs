@@ -41,6 +41,7 @@ namespace STHT.Pages
                 //ProductId = 111,
                 UserId = 1414,
                 ProductId = 2222,
+                BidPrice = 2400
             }; 
                 
             //update button 
@@ -66,7 +67,7 @@ namespace STHT.Pages
                     NewShipping.CountryLocale = "IN";
                     NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
                     NewShipping.OwnTransport = 0;
-                    NewShipping.BidPrice = 2400;
+                    
                     if (NewShipping.ShippingCost != 0)
                     {
                         NewShipping.DeliveryOption = "DeliveryToYard";
