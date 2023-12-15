@@ -39,7 +39,7 @@ namespace STHT.Pages
             {
                 //UserId = 1122,
                 //ProductId = 111,
-                UserId = 1111,
+                UserId = 1414,
                 ProductId = 2222,
             }; 
                 
@@ -63,7 +63,7 @@ namespace STHT.Pages
                 if (ExistingShipping == null)
                 {
                     //If there exist no record for the userid and password create new shipping 
-                    NewShipping.CountryLocale = "FR";
+                    NewShipping.CountryLocale = "IN";
                     NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
                     NewShipping.OwnTransport = 0;
                     NewShipping.BidPrice = 2400;

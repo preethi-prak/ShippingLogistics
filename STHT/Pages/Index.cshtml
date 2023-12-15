@@ -43,9 +43,9 @@
             </div>
             <div class="row gx-5">
                 <div class="col-md-12">
-                    <label>
+                    <span>
                         <strong>Shipping Option </strong>
-                    </label>
+                    </span>
                 </div>
             </div>
             <!-- Change component based on the shipping option -->
@@ -53,10 +53,10 @@
             {
             <div class="row gx-5">
                 <div class="col-md-8">
-                    <label for="deliverToYard">Delivery to your Yard:</label>
+                    <span>Delivery to your Yard:</span>
                 </div>
                 <div class="col-md-4">
-                     <label  id="deliverToYard"  name="deliverToYard" >&pound; @Model.NewShipping.ShippingCost </label>
+                    <span id="deliverToYard">&pound; @Model.NewShipping.ShippingCost</span>
                 </div>
             </div>
             } else
@@ -64,10 +64,10 @@
             <!-- if shippingPrice == 0 --> 
             <div class="row gx-5">
                 <div class="col-md-8">
-                    <label for="ownTransportLabel">Own Transport:</label>
+                    <span>Own Transport:</span>
                 </div>
                 <div class="col-md-4">
-                <label  id="ownTransportLabel"  name="ownTransportLabel" >&pound; @Model.NewShipping.OwnTransport</label>
+                    <span id="ownTransportValue">&pound; @Model.NewShipping.OwnTransport</span>
                 </div>
             </div>
             }
@@ -96,15 +96,17 @@
             <div class="modal-body">
                 <div class="row gx-5">
                     <div class="col-md-4">
-                        <label for="tractorPriceLabel">Tractor Price: </label>
+                        
+                        <span>Tractor Price:</span>
+                        
                     </div>
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
                         
-                        
-                        <label asp-for="NewShipping.BidPrice" id="tractorPriceLabel" name="tractorPriceLabel">&pound; @Model.NewShipping.BidPrice</label>
+                        <span id="tractorPriceLabel">&pound; @Model.NewShipping.BidPrice</span>
                         <input type="hidden" asp-for="NewShipping.BidPrice" />
+                        
                     </div>
                 </div>
                 <div class="row gx-5">
@@ -160,7 +162,7 @@
                 <input type="hidden" asp-for="NewShipping.ProductId"/>
                 <input type="hidden" asp-for="NewShipping.ShippingCost"/>
                 <input type="hidden" asp-for="NewShipping.CountryLocale"/>
-                <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping">Update changes</button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping" id="UpdateShippingBtn">Update changes</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -174,23 +176,61 @@
         const bidPrice = @Model.NewShipping.BidPrice;
         const shippingCost = @Model.NewShipping.ShippingCost;
         const totalPriceLabel = $('#totalPriceLabel');
-        const deliveryToYardRadio = $('#deliveryToYard');
-        const ownTransportRadio = $('#ownTransport');
-    
+        const updateShippingBtn = $('#UpdateShippingBtn');
+        const confirmBtn = $('#confirmBtn');
+        //Use class for partial view components
+        const deliveryToYardRadio = $('.deliveryToYard');
+        const ownTransportRadio = $('.ownTransport');
+        
+
         function updateTotalPrice() {
-            if (deliveryToYardRadio.is(':checked')) {
+            if ((deliveryToYardRadio.is(':checked'))&&(bidPrice !==0)) {
                 totalPriceLabel.text('£' + (bidPrice + shippingCost));
-            } else if (ownTransportRadio.is(':checked')) {
+            } else if (ownTransportRadio.is(':checked')&&(bidPrice !==0)) {
                 totalPriceLabel.text('£' + bidPrice);
             }
         }
+        
+        function DisableRadio() {
+                if (shippingCost === 0) {
+                    deliveryToYardRadio.prop('disabled', true);
+                    // If the deliveryToYardRadio is disabled and checked, enable and change to ownTransportRadio
+                    if (deliveryToYardRadio.is(':checked')) {
+                        ownTransportRadio.prop('checked', true);
+                    }
+                } else {
+                    deliveryToYardRadio.prop('disabled', false);
+                }
+                updateTotalPrice(); // Update price if radio state changes
+            }
+            
+        function DisableButton()
+        {
+            if (bidPrice === 0 ){
+                updateShippingBtn.prop('disabled', true);
+                confirmBtn.prop('disabled', true);
+                }else{
+                updateShippingBtn.prop('disabled', false);
+                confirmBtn.prop('disabled', false);
+                }
+            }
    
-        deliveryToYardRadio.change(updateTotalPrice);
+         // Bind the change event to radios
+            deliveryToYardRadio.change(function() {
+                updateTotalPrice();
+                DisableRadio();
+            });
         ownTransportRadio.change(updateTotalPrice);
-    
+        
         // Initial calculation On Load
         updateTotalPrice();
+        DisableRadio();
+        DisableButton()
+        
+        
     });
+    
+    
         
     </script>
 }
