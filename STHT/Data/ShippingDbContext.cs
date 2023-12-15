@@ -69,8 +69,7 @@ public class ShippingDbContext : DbContext
                 ShippingDetails.Update(existingShipping);
                 
             }
-            SaveChanges();
         }
-        
+        SaveChanges();
     }
 }

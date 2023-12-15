@@ -37,8 +37,10 @@ namespace STHT.Pages
             ShippingData = await ShippingApiCallAsync();
             NewShipping = new Shipping()
             {
-                UserId = 1122,
-                ProductId = 111,
+                //UserId = 1122,
+                //ProductId = 111,
+                UserId = 1111,
+                ProductId = 2222,
             }; 
                 
             //update button 
@@ -65,8 +67,14 @@ namespace STHT.Pages
                     NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
                     NewShipping.OwnTransport = 0;
                     NewShipping.BidPrice = 2400;
-                    NewShipping.DeliveryOption = "OwnTransport";
-
+                    if (NewShipping.ShippingCost != 0)
+                    {
+                        NewShipping.DeliveryOption = "DeliveryToYard";
+                    }
+                    else
+                    {
+                        NewShipping.DeliveryOption = "OwnTransport";
+                    }
                     if (NewShipping.DeliveryOption == "DeliveryToYard")
                         NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
                     else
