@@ -14,7 +14,8 @@ The backend, uses C# Razor pages which follow a Page Template Pattern, which is 
 ## Requirements to Run the Project
 1. Download .NET 6.0 SDK ( https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 2. Rider IDE (https://www.jetbrains.com/rider/download/#section=mac)
-3. Postgres Database
+3. Postgres Database 14.0
+4. PgAdmin ( GUI for Postgres) or any preferable GUI of your choice
 
 ### Dependencies 
 - Microsoft.EntityFrameworkCore 6.0.25
