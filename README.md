@@ -1,4 +1,4 @@
-# STHT
+ # STHT
 
 A Web application with REST API that implements
 - an endpoint that gets the User's Locale 
@@ -16,7 +16,7 @@ The backend, uses C# Razor pages which follow a Page Template Pattern, which is 
 2. Rider IDE (https://www.jetbrains.com/rider/download/#section=mac)
 3. Postgres Database
 
-###Dependencies 
+### Dependencies 
 - Microsoft.EntityFrameworkCore 6.0.25
 - Microsoft.EntityFrameworkCore.Design 6.0.25
 - Newtonsoft.JSON 13.0.3
@@ -30,23 +30,23 @@ The backend, uses C# Razor pages which follow a Page Template Pattern, which is 
 
   ### Restore Dependencies 
 
-- After the project is loaded, Rightclick on the Project -> Manage Nuget Package 
-- Ensure all the necessary packages are restored. (The .csproj file takes care of automatically managing and installing packages )
+  - After the project is loaded, Rightclick on the Project -> Manage Nuget Package 
+  - Ensure all the necessary packages are restored. (The .csproj file takes care of automatically managing and installing packages )
 
   ### Database Settings
   - After Connecting to a Postgres server, Create a new database
   - Navigate to "appsettings.json" file to modify the connection string in the following format
     
     "ConnString": "Server=server_name;Port=port_number;Database=database_name;User Id=user_name;Password=your_password"
- - Test the connection string
+  - Test the connection string
 
- ### Database Migration 
- - In the terminal inside the Rider IDE ,Run the following command to install a tool to manage Entity Framework Commands 
+  ### Database Migration 
+   - In the terminal inside the Rider IDE ,Run the following command to install a tool to manage Entity Framework Commands 
    ```
    dotnet tool install -g dotnet-ef
 
    ```
-- Navigate to the project folder where the .csproj file resides and run the following command to create the tables, columns and constraints 
+  - Navigate to the project folder where the .csproj file resides and run the following command to create the tables, columns and constraints 
   ```
   dotnet ef database update
 
@@ -55,11 +55,6 @@ The backend, uses C# Razor pages which follow a Page Template Pattern, which is 
   
 
  ### Running the application 
+ 
  Now click the RUN Button to run the application. 
  
- 
-
-
-
-
-Developer Name - Preethi Prakash
