@@ -4,8 +4,6 @@
 
 @{
     ViewData["Title"] = "STHT";
-    
-
     // set shipping to zero if country code doesnt exist . 
 }
 
@@ -126,16 +124,27 @@
                         
                         <label id="totalPriceLabel" asp-for="NewShipping.TotalPrice">&pound; </label>
                         <input type="hidden" asp-for="NewShipping.TotalPrice" />
+                       
 
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <input type="hidden" asp-for="NewShipping.UserId"/>
+                 <span asp-validation-for="NewShipping.UserId"></span>
+
                 <input type="hidden" asp-for="NewShipping.ProductId"/>
+                                <span asp-validation-for="NewShipping.ProductId"></span>
+
                 <input type="hidden" asp-for="NewShipping.ShippingCost"/>
+                                <span asp-validation-for="NewShipping.ShippingCost"></span>
+
                 <input type="hidden" asp-for="NewShipping.CountryLocale"/>
+                                <span asp-validation-for="NewShipping.CountryLocale"></span>
+
                 <input type="hidden" asp-for="NewShipping.BidPrice" />
+                                <span asp-validation-for="NewShipping.BidPrice"></span>
+
                 <button type="submit" class="btn btn-primary" id="confirmBtn" asp-page-handler="Bidding">Confirm</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
@@ -159,10 +168,15 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" asp-for="NewShipping.UserId"/>
+                <span asp-validation-for="NewShipping.UserId"></span>
                 <input type="hidden" asp-for="NewShipping.ProductId"/>
+                <span asp-validation-for="NewShipping.ProductId"></span>
                 <input type="hidden" asp-for="NewShipping.ShippingCost"/>
+                <span asp-validation-for="NewShipping.ShippingCost"></span>
                 <input type="hidden" asp-for="NewShipping.CountryLocale"/>
+                <span asp-validation-for="NewShipping.CountryLocale"></span>
                 <input type="hidden" asp-for="NewShipping.BidPrice"/>
+                <span asp-validation-for="NewShipping.CountryLocale"></span>
                 <button type="submit" class="btn btn-primary" asp-page-handler="UpdateShipping" id="UpdateShippingBtn">Update changes</button>
                 <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cancel</button>
             </div>
@@ -206,7 +220,7 @@
             }
             
         function DisableButton()
-        {
+        {// if userid / product id / userlocale / bid price 
             if (bidPrice === 0 ){
                 updateShippingBtn.prop('disabled', true);
                 confirmBtn.prop('disabled', true);

@@ -39,7 +39,7 @@ namespace STHT.Pages
             {
                 //UserId = 1122,
                 //ProductId = 111,
-                UserId = 1414,
+                UserId = 1234 ,
                 ProductId = 2222,
                 BidPrice = 2400
             }; 
@@ -49,7 +49,7 @@ namespace STHT.Pages
             // if not create new shipping 
             
             //await TestConnection();
-            bool isDbConnected =  _dbContext.Database.CanConnect();
+            bool isDbConnected =  await _dbContext.Database.CanConnectAsync();
             if (!isDbConnected)
             {
                 // Handle the error, maybe set an error message or log it
@@ -64,9 +64,9 @@ namespace STHT.Pages
                 if (ExistingShipping == null)
                 {
                     //If there exist no record for the userid and password create new shipping 
-                    NewShipping.CountryLocale = "IN";
-                    NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
+                    NewShipping.CountryLocale = "";
                     NewShipping.OwnTransport = 0;
+                    NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
                     
                     if (NewShipping.ShippingCost != 0)
                     {
