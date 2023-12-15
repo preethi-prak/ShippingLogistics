@@ -1,5 +1,5 @@
 ﻿// Write your JavaScript code.
-$(document).ready(function() {
+$(document).ready(function () {
     // Open Bid modal on button click
     $('#bidModalBtn').click(function () {
         $('#bidModal').modal('show');

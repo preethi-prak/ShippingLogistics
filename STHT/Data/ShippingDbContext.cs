@@ -16,7 +16,7 @@ public class ShippingDbContext : DbContext
     //Change the method name 
     public void CreateOrUpdateShippingForBidding(Shipping shippingModel)
     {
-        var existingShipping =  ShippingDetails
+        var existingShipping = ShippingDetails
             .FirstOrDefault(s => s.UserId == shippingModel.UserId && s.ProductId == shippingModel.ProductId);
 
         if (existingShipping == null)
@@ -32,26 +32,26 @@ public class ShippingDbContext : DbContext
             existingShipping.DeliveryOption = shippingModel.DeliveryOption;
             existingShipping.CountryLocale = shippingModel.CountryLocale;
             existingShipping.BidPrice = shippingModel.BidPrice;
-            if (shippingModel.DeliveryOption =="DeliveryToYard")
+            if (shippingModel.DeliveryOption == "DeliveryToYard")
             {
                 shippingModel.TotalPrice = shippingModel.ShippingCost + shippingModel.BidPrice;
-                
             }
-            else if(shippingModel.DeliveryOption =="OwnTransport")
+            else if (shippingModel.DeliveryOption == "OwnTransport")
             {
-                shippingModel.TotalPrice =  shippingModel.BidPrice;
+                shippingModel.TotalPrice = shippingModel.BidPrice;
             }
+
             existingShipping.TotalPrice = shippingModel.TotalPrice;
-            
+
             ShippingDetails.Update(existingShipping);
         }
-        SaveChanges();
 
+        SaveChanges();
     }
 
     public void CreateOrUpdateShipping(Shipping newShipping)
     {
-        var existingShipping =  ShippingDetails
+        var existingShipping = ShippingDetails
             .FirstOrDefault(s => s.UserId == newShipping.UserId && s.ProductId == newShipping.ProductId);
         if (existingShipping == null)
         {
@@ -60,16 +60,16 @@ public class ShippingDbContext : DbContext
         }
         else
         {
-            if(newShipping.DeliveryOption != existingShipping.DeliveryOption)
+            if (newShipping.DeliveryOption != existingShipping.DeliveryOption)
             {
                 existingShipping.ShippingCost = newShipping.ShippingCost;
                 existingShipping.OwnTransport = newShipping.OwnTransport;
                 existingShipping.DeliveryOption = newShipping.DeliveryOption;
                 existingShipping.CountryLocale = newShipping.CountryLocale;
                 ShippingDetails.Update(existingShipping);
-                
             }
         }
+
         SaveChanges();
     }
 }

@@ -34,14 +34,14 @@ app.UseAuthorization();
 //map razor pages with routes OnGet - GET , OnPost - POST
 app.MapRazorPages();
 //Minimal API for cultureinfo - Change URL to getUserLocale!! 
-app.MapGet("/getUserLocale", (HttpContext context) => 
+app.MapGet("/getUserLocale", (HttpContext context) =>
 {
     var cultureInfo = System.Globalization.CultureInfo.CurrentCulture;
     //en-US
     var cultureParts = cultureInfo.Name.Split('-');
     var countryCode = cultureParts.Length > 1 ? cultureParts[1] : "Unknown";
-    return Results.Ok(new 
-    { 
+    return Results.Ok(new
+    {
         country = countryCode
     });
 });

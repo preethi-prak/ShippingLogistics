@@ -1,6 +1,5 @@
 @model IndexModel
 @{
-    
 }
 
 <div>
@@ -18,7 +17,7 @@
         </div>
         <div class="col-md-4">
             <label id="deliveryChargeLabel" for="shippingCostInput">&pound; @Model.NewShipping.ShippingCost</label>
-            <input type="hidden" id="shippingCostInput" asp-for="NewShipping.ShippingCost" />
+            <input type="hidden" id="shippingCostInput" asp-for="NewShipping.ShippingCost"/>
         </div>
     </div>
 </div>
@@ -29,13 +28,13 @@
             <!-- <input class="form-check-input" type="radio" name="shippingOptions" id="ownTransport" value=""> -->
             <!-- <label for="ownTransport">Own Transport :</label> -->
 
-            <input type="radio" asp-for="NewShipping.DeliveryOption" value="OwnTransport" id="ownTransport" class="ownTransport" />
+            <input type="radio" asp-for="NewShipping.DeliveryOption" value="OwnTransport" id="ownTransport" class="ownTransport"/>
             <label for="ownTransport">Own Transport :</label>
-            
+
         </div >
         <div class="col-md-4">
-         
-            <label id="ownTransportLabel" asp-for="NewShipping.OwnTransport" >&pound; @Model.NewShipping.OwnTransport</label>
+
+            <label id="ownTransportLabel" asp-for="NewShipping.OwnTransport">&pound; @Model.NewShipping.OwnTransport</label>
         </div >
     </div>
 </div>
