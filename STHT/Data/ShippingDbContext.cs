@@ -48,4 +48,29 @@ public class ShippingDbContext : DbContext
         SaveChanges();
 
     }
+
+    public void CreateOrUpdateShipping(Shipping newShipping)
+    {
+        var existingShipping =  ShippingDetails
+            .FirstOrDefault(s => s.UserId == newShipping.UserId && s.ProductId == newShipping.ProductId);
+        if (existingShipping == null)
+        {
+            //create new field
+            ShippingDetails.Add(newShipping);
+        }
+        else
+        {
+            if(newShipping.DeliveryOption != existingShipping.DeliveryOption)
+            {
+                existingShipping.ShippingCost = newShipping.ShippingCost;
+                existingShipping.OwnTransport = newShipping.OwnTransport;
+                existingShipping.DeliveryOption = newShipping.DeliveryOption;
+                existingShipping.CountryLocale = newShipping.CountryLocale;
+                ShippingDetails.Update(existingShipping);
+                
+            }
+            SaveChanges();
+        }
+        
+    }
 }

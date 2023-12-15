@@ -30,7 +30,7 @@ namespace STHT.Pages
         }
 
         //GET METHOD
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             
             await GetCountryCode();
@@ -46,41 +46,47 @@ namespace STHT.Pages
             // if not create new shipping 
             
             //await TestConnection();
-            ExistingShipping = await _dbContext.ShippingDetails
-                .FirstOrDefaultAsync(s => s.UserId == NewShipping.UserId && s.ProductId == NewShipping.ProductId);
-
-            if (ExistingShipping == null)
+            bool isDbConnected =  _dbContext.Database.CanConnect();
+            if (!isDbConnected)
             {
-                //If there exist no record for the userid and password create new shipping 
-                NewShipping.CountryLocale = "FR";
-                NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale,ShippingData);
-                NewShipping.OwnTransport = 0;
-                NewShipping.BidPrice = 2400;
-                NewShipping.DeliveryOption = "OwnTransport";
-                
-                if (NewShipping.DeliveryOption =="DeliveryToYard")
-                    NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
-                else
-                    NewShipping.TotalPrice = NewShipping.BidPrice;
+                // Handle the error, maybe set an error message or log it
+                ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
+                return RedirectToPage("/Error");
             }
             else
             {
-                //if record exists for the user - assign the values in database
-                NewShipping = ExistingShipping;
+                ExistingShipping = await _dbContext.ShippingDetails
+                    .FirstOrDefaultAsync(s => s.UserId == NewShipping.UserId && s.ProductId == NewShipping.ProductId);
+
+                if (ExistingShipping == null)
+                {
+                    //If there exist no record for the userid and password create new shipping 
+                    NewShipping.CountryLocale = "FR";
+                    NewShipping.ShippingCost = ProcessShippingData(NewShipping.CountryLocale, ShippingData);
+                    NewShipping.OwnTransport = 0;
+                    NewShipping.BidPrice = 2400;
+                    NewShipping.DeliveryOption = "OwnTransport";
+
+                    if (NewShipping.DeliveryOption == "DeliveryToYard")
+                        NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
+                    else
+                        NewShipping.TotalPrice = NewShipping.BidPrice;
+                }
+                else
+                {
+                    //if record exists for the user - assign the values in database
+                    NewShipping = ExistingShipping;
+                }
+
+                return Page();
             }
- 
+
         }
         
         // POSTMETHOD on Update shipping modal 
         public IActionResult OnPostUpdateShipping()
         {
             
-           var sh_userid = NewShipping.UserId;
-           var sh_prodid = NewShipping.ProductId;
-           var del = NewShipping.DeliveryOption;
-           var price = NewShipping.ShippingCost;
-           var c = NewShipping.CountryLocale;
-           var aa = NewShipping.OwnTransport;
 
            if (NewShipping != null || ModelState.IsValid )
            {
@@ -90,6 +96,11 @@ namespace STHT.Pages
                    // Handle the error, maybe set an error message or log it
                    ModelState.AddModelError(string.Empty, "Unable to connect to the database.");
                    return RedirectToPage("/Error");
+               }
+               if (NewShipping.DeliveryOption != null)
+               {
+                   _dbContext.CreateOrUpdateShipping(NewShipping);
+                    
                }
            
                //Call Get method on index page load
@@ -117,7 +128,7 @@ namespace STHT.Pages
                 }
                 else
                 {
-                    if (NewShipping?.DeliveryOption == "DeliveryToYard")
+                    if (NewShipping.DeliveryOption == "DeliveryToYard")
                     {
                         NewShipping.TotalPrice = NewShipping.ShippingCost + NewShipping.BidPrice;
                         _dbContext.CreateOrUpdateShippingForBidding(NewShipping);
