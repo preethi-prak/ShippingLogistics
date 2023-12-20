@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using STHT.Data;
+using ShippingLogistics.Data;
 
 // Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);

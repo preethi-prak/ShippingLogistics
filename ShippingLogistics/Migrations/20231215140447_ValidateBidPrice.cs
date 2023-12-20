@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace STHT.Migrations
+namespace ShippingLogistics.Migrations
 {
     public partial class ValidateBidPrice : Migration
     {

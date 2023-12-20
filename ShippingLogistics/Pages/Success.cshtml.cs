@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace STHT.Pages;
+namespace ShippingLogistics.Pages;
 
 public class SuccessModel : PageModel
 {

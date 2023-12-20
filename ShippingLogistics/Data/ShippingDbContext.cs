@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using STHT.Data.Models;
-using STHT.Pages;
+using ShippingLogistics.Data.Models;
+using ShippingLogistics.Pages;
 
-namespace STHT.Data;
+namespace ShippingLogistics.Data;
 
 public class ShippingDbContext : DbContext
 {
@@ -12,6 +12,7 @@ public class ShippingDbContext : DbContext
     }
 
     public DbSet<Shipping> ShippingDetails { get; set; }
+    
 
     //Change the method name 
     public void CreateOrUpdateShippingForBidding(Shipping shippingModel)

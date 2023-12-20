@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace STHT.Data.Models;
+namespace ShippingLogistics.Data.Models;
 
 public class Shipping
 {

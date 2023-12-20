@@ -1,4 +1,4 @@
- # STHT
+ # ShippingLogistics
 
 A Web application with REST API that implements
 - an endpoint that gets the User's Locale 
@@ -26,7 +26,7 @@ The backend, uses C# Razor pages which follow a Page Template Pattern, which is 
 ## Steps 
 - Open the RIDER IDE
 - Click on the get from VCS 
-- Clone the Github repository : https://github.com/preethi-prak/STHT.git
+- Clone the Github repository : https://github.com/preethi-prak/ShippingLogistics.git
 - Enter the Directory and Clone the repository 
 
   ### Restore Dependencies 

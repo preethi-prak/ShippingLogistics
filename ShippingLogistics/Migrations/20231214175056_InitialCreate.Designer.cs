@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using STHT.Data;
+using ShippingLogistics.Data;
 
 #nullable disable
 
-namespace STHT.Migrations
+namespace ShippingLogistics.Migrations
 {
     [DbContext(typeof(ShippingDbContext))]
     [Migration("20231214175056_InitialCreate")]
@@ -23,7 +23,7 @@ namespace STHT.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("STHT.Data.Models.Shipping", b =>
+            modelBuilder.Entity("ShippingLogistics.Data.Models.Shipping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

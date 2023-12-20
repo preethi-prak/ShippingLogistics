@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using STHT.Data; // Newtonsoft.Json for JSON
-using STHT.Data.Models;
+using ShippingLogistics.Data; // Newtonsoft.Json for JSON
+using ShippingLogistics.Data.Models;
 
-namespace STHT.Pages
+namespace ShippingLogistics.Pages
 {
     public class IndexModel : PageModel
     {
